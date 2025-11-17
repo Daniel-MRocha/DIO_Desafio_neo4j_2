@@ -1,0 +1,1 @@
+MERGE (n1:Music {Title: ""})<-[:LISTENED {rating: 0.0, liked: "false"}]-(:User {name: ""})-[:SENSATION {liked: "false", follower: "false"}]->(:Artist {artist: ""})<-[:BELONG_FOR]-(n1)-[:IN_GENRE]->(:Genre {genre: ""})
