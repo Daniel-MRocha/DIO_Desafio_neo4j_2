@@ -1,0 +1,37 @@
+-------------------------------------------------------------------
+Query usado para o seed do database com musicas, gêneros e artistas
+-------------------------------------------------------------------
+CALL (){
+LOAD CSV WITH HEADERS FROM "file:///Music_Info.csv" AS row
+MERGE (m:Music{title:row.title})
+MERGE (a:Artist{artist:row.artist})
+MERGE (m)-[:BELONG_FOR]->(a)
+
+WITH m, Split(row.genre,",") AS genres
+
+UNWIND genres AS gen
+MERGE (g:Genre{genre:gen})
+MERGE (m)-[:IS_GENRE]->(g) } IN TRANSACTIONS OF 1000 ROWS
+
+-------------------------------------------------
+Query usado para o seed da relação usuário/musica
+com atenção ao toFloat com recolocação de , por .
+-------------------------------------------------
+
+CALL (){
+LOAD CSV WITH HEADERS FROM "file:///Seed_user_music.csv" AS row
+MERGE (u:User{name:row.user})
+MERGE (m:Music{title:row.music})
+MERGE (u)-[:LISTENED{rating:toFloat(replace(row.rating,',','.')),liked:row.liked}]-(m)
+}
+
+-------------------------------------------------
+Query usado para o seed da relação usuário/artista
+-------------------------------------------------
+
+CALL (){
+LOAD CSV WITH HEADERS FROM "file:///Seed_user_art.csv" AS row
+MERGE (u:User{name:row.user})
+MERGE (a:Artist{artist:row.artist})
+MERGE (u)-[:SENSATION{liked:toBoolean(row.liked),followed:toBoolean(row.follower)}]->(a)
+}
