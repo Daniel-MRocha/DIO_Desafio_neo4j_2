@@ -1,0 +1,6 @@
+/*Lista de sugestões de artistas, baseado nas musicas escutadas com o rating acima de 7.0 */
+MATCH (u:User)-[r:LISTENED]->(m:Music)
+WHERE r.rating > 7.0
+MATCH (m)-[:BELONG_FOR]->(a:Artist)
+WITH u,collect(a.artist) AS Artistas_indicados LIMIT 15
+RETURN u.name AS User, Artistas_indicados

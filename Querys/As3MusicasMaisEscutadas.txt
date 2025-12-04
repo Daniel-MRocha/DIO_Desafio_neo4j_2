@@ -1,0 +1,7 @@
+//As 3 músicas mais rodadas
+MATCH (:User)-[:LISTENED]->(m:Music)
+WITH collect(m.title) AS musicas
+WITH apoc.coll.frequencies(musicas) AS list 
+UNWIND list AS mus
+RETURN mus.item AS musica, mus.count AS Escutadas ORDER BY mus.count DESC
+LIMIT 3

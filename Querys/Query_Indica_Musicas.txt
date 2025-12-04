@@ -1,0 +1,39 @@
+/*Esta query busca o usuário, conta os 3 gêneros mais presentes nas músicas que ele escutou, joga-os em uma lista, com esta lista busca musicas que contenham 
+estes 3 gêneros em comum e cria sugere até 15 musicas, resultado desta subQuery*/
+
+MATCH (nodeUsers:User)
+WITH nodeUsers
+
+CALL (nodeUsers){
+MATCH(nodeUsers)-[r:LISTENED]->(m:Music)-[isG:IS_GENRE]-(g:Genre)
+WITH count(g.genre) AS generosPreferidos , g AS genero
+ORDER BY generosPreferidos DESC
+LIMIT 3
+WITH nodeUsers , collect(genero.genre) AS listaDeGenerosPreferidos
+RETURN {nodeUs:nodeUsers,listaG:listaDeGenerosPreferidos} AS mapUsersGen
+}
+
+WITH mapUsersGen
+CALL(mapUsersGen){
+WITH mapUsersGen
+
+//retornando node de usuário com os 3 gêneros mais escutados
+RETURN mapUsersGen.nodeUs AS users, mapUsersGen.listaG AS lista_dos_gêneros_mais_escutados
+}
+
+WITH users , lista_dos_gêneros_mais_escutados
+CALL(users,lista_dos_gêneros_mais_escutados){
+
+WITH users, lista_dos_gêneros_mais_escutados
+MATCH (resultM:Music)-[:IS_GENRE]->(g1:Genre{genre:lista_dos_gêneros_mais_escutados[0]})
+MATCH (resultM)-[:IS_GENRE]->(g2:Genre{genre:lista_dos_gêneros_mais_escutados[1]})
+MATCH (resultM)-[:IS_GENRE]->(g3:Genre{genre:lista_dos_gêneros_mais_escutados[2]})
+LIMIT 15
+WITH collect(resultM.title) AS sugestões
+
+RETURN   users.name AS Usuário,
+         lista_dos_gêneros_mais_escutados AS Mais_ouvidos,
+          sugestões
+}
+
+RETURN Usuário, Mais_ouvidos,sugestões;
