@@ -6,7 +6,6 @@
 ## Desenvolvimento
 
 Foi usada uma base de dados como seed do kaggle, de músicas, artistas e gêneros
-<ul>
 ### Criei alguns users com relacionamentos fictícios, apenas para os testes
  Após a criação do database, desenvolvi 3 querys a principio:
 - Uma que indica musica com base nos gêneros, ou seja, a query pega os 3 gêneros mais escutados do user, depois busca musícas do database e retorna como sugestão, 15 músicas que contenham os 3 gêneros mais escutados.
